@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Url-Shortener</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            margin: 0;
+        }
+        .container {
+            background-color: #fff; 
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+            padding: 20px;
+            width: 50%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #333; 
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #666; /* Medium gray text color */
+        }
+        input[type="text"]
+         {
+            width: calc(100% - 20px); /* Full width input, accounting for padding */
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #1976D2; /* Material blue */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0D47A1; /* Darker shade of Material blue */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Url-Shortener <span class="material-symbols-outlined">
+            link
+            </span></h1>
+        <form id="dataForm">
+            <label for="url">Url</label>
+            <p id="error"></p>
+            <input type="text" id="url" placeholder="Enter your Full-Url" required>
+            
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>Your ShortUrl here</h2>
+        <textarea  id ="tx"name="text" cols="20" ></textarea>
+    </div>
+    <script>
+        function isValidHttpUrl(string) {
+  try {
+    const newUrl =  new URL(string);
+    return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
+  } catch (err) {
+    return false;
+  }
+}
+        document.getElementById('dataForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const url = document.getElementById('url').value;
+     
+    
+
+    const data = {url};
+
+  
+        try {
+            if(isValidHttpUrl(url)==true){
+        const response = await fetch('http://localhost:8001/url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        console.log('Success:', result);
+        document.getElementById("tx").innerText=result.shortUrl
+            }else{
+                document.getElementById('error').innerHTML="Enter the Valid Url"
+                document.getElementById('url').style.borderColor='red'
+            }
+    } catch (error) {
+        console.error('Error:',error);
+    }
+
+
+});
+    
+
+   
+    </script>
+</body>
+</html>
